@@ -199,7 +199,7 @@ async function getSubInfo(request, UA, url: URL, env, userAgent: string) {
 			total = 102400;
 		}
 	}
-	//console.log(`pagesSum: ${pagesSum}\nworkersSum: ${workersSum}\ntotal: ${total}`);
+	console.log(`pagesSum: ${pagesSum}\nworkersSum: ${workersSum}\ntotal: ${total}`);
 	if (userAgent && userAgent.includes('mozilla')) {
 		return new Response(`${vlessConfig}`, {
 			status: 200,

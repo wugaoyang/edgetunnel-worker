@@ -8,7 +8,7 @@ static userID = '80cd4a77-141a-43c9-991b-08263cfe9c10';
 // cdn-all.xn--b6gac.eu.org,
 // workers.cloudflare.cyou'
 // 5.161.191.23
-static proxyIP = '43.153.103.203';
+static proxyIP = '142.171.140.152';
 
 static sub: string | null = '';// 避免项目被滥用，现已取消内置订阅器
 static subconverter = 'SUBAPI.fxxk.dedyn.io';// clash订阅转换后端，目前使用CM的订阅转换功能。自带虚假uuid和host订阅。
