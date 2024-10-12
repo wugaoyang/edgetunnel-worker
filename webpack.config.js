@@ -2,7 +2,7 @@
 const path = require('path');
 
 module.exports = {
-	entry: './src/_worker.ts', // 入口文件
+	entry: './src/_worker.js', // 入口文件
 	output: {
 		filename: '_worker.js', // 输出文件
 		path: path.resolve(__dirname, 'dist'), // 输出目录

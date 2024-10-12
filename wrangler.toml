@@ -1,6 +1,6 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "edgetunnel-worker"
-main = "src/_worker.ts"
+main = "src/_worker.js"
 compatibility_date = "2023-05-18"
 compatibility_flags = ["nodejs_compat"]
 # 构建配置
