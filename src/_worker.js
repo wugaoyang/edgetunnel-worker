@@ -53,7 +53,6 @@ export default {
 						AppParam.socks5Address = `${userPassword}@${AppParam.socks5Address.split('@')[1]}`;
 					}
 				}
-				console.log("socks5Address", AppParam.socks5Address)
 				if (AppParam.socks5Address) {
 					try {
 						AppParam.parsedSocks5Address = CommonUtils.socks5AddressParser(AppParam.socks5Address);
