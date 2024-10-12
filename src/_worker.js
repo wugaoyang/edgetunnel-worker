@@ -21,13 +21,13 @@ if (!isValidUUID(userID)) {
 	throw new Error('uuid is not valid');
 }
 
-let parsedSocks5Address = {}; 
+let parsedSocks5Address = {};
 let enableSocks = false;
 
 // 虚假uuid和hostname，用于发送给配置生成服务
 let fakeUserID ;
 let fakeHostName ;
-let noTLS = 'false'; 
+let noTLS = 'false';
 const expire = 4102329600;//2099-12-31
 let proxyIPs;
 let socks5s;
@@ -72,7 +72,7 @@ let addressescsv = [];
 let DLS = 8;
 let FileName = 'edgetunnel';
 let BotToken ='';
-let ChatID =''; 
+let ChatID ='';
 let proxyhosts = [];//本地代理域名池
 let proxyhostsURL = 'https://raw.githubusercontent.com/cmliu/CFcdnVmess2sub/main/proxyhosts';//在线代理域名池URL
 let RproxyIP = 'false';
@@ -90,7 +90,7 @@ export default {
 			userID = (env.UUID || userID).toLowerCase();
 
 			const currentDate = new Date();
-			currentDate.setHours(0, 0, 0, 0); 
+			currentDate.setHours(0, 0, 0, 0);
 			const timestamp = Math.ceil(currentDate.getTime() / 1000);
 			const fakeUserIDMD5 = await MD5MD5(`${userID}${timestamp}`);
 			fakeUserID = fakeUserIDMD5.slice(0, 8) + "-" + fakeUserIDMD5.slice(8, 12) + "-" + fakeUserIDMD5.slice(12, 16) + "-" + fakeUserIDMD5.slice(16, 20) + "-" + fakeUserIDMD5.slice(20);
@@ -105,7 +105,7 @@ export default {
 			socks5s = await ADD(socks5Address);
 			socks5Address = socks5s[Math.floor(Math.random() * socks5s.length)];
 			socks5Address = socks5Address.split('//')[1] || socks5Address;
-			
+
 			sub = env.SUB || sub;
 			subconverter = env.SUBAPI || subconverter;
 			if( subconverter.includes("http://") ){
@@ -121,7 +121,7 @@ export default {
 					RproxyIP = env.RPROXYIP || 'false';
 					enableSocks = true;
 				} catch (err) {
-  					/** @type {Error} */ 
+  					/** @type {Error} */
 					let e = err;
 					console.log(e.toString());
 					RproxyIP = env.RPROXYIP || !proxyIP ? 'true' : 'false';
@@ -137,7 +137,7 @@ export default {
 			if (env.ADDCSV) addressescsv = await ADD(env.ADDCSV);
 			DLS = env.DLS || DLS;
 			BotToken = env.TGTOKEN || BotToken;
-			ChatID = env.TGID || ChatID; 
+			ChatID = env.TGID || ChatID;
 			if(env.GO2SOCKS5) go2Socks5s = await ADD(env.GO2SOCKS5);
 			const upgradeHeader = request.headers.get('Upgrade');
 			const url = new URL(request.url);
@@ -214,7 +214,7 @@ export default {
 				proxyIP = url.searchParams.get('proxyip') || proxyIP;
 				if (new RegExp('/proxyip=', 'i').test(url.pathname)) proxyIP = url.pathname.toLowerCase().split('/proxyip=')[1];
 				else if (new RegExp('/proxyip.', 'i').test(url.pathname)) proxyIP = `proxyip.${url.pathname.toLowerCase().split("/proxyip.")[1]}`;
-				
+
 				socks5Address = url.searchParams.get('socks5') || socks5Address;
 				if (new RegExp('/socks5=', 'i').test(url.pathname)) socks5Address = url.pathname.split('5=')[1];
 				else if (new RegExp('/socks://', 'i').test(url.pathname) || new RegExp('/socks5://', 'i').test(url.pathname)) {
@@ -231,7 +231,7 @@ export default {
 						parsedSocks5Address = socks5AddressParser(socks5Address);
 						enableSocks = true;
 					} catch (err) {
-						/** @type {Error} */ 
+						/** @type {Error} */
 						let e = err;
 						console.log(e.toString());
 						enableSocks = false;
@@ -669,7 +669,7 @@ function processVlessHeader(vlessBuffer, userID) {
 
 /**
  * 将远程 Socket 的数据转发到 WebSocket
- * 
+ *
  * @param {import("@cloudflare/workers-types").Socket} remoteSocket 远程服务器的 Socket 连接
  * @param {import("@cloudflare/workers-types").WebSocket} webSocket 客户端的 WebSocket 连接
  * @param {ArrayBuffer} vlessResponseHeader VLESS 协议的响应头部
@@ -756,7 +756,7 @@ async function remoteSocketToWS(remoteSocket, webSocket, vlessResponseHeader, re
 
 /**
  * 将 Base64 编码的字符串转换为 ArrayBuffer
- * 
+ *
  * @param {string} base64Str Base64 编码的输入字符串
  * @returns {{ earlyData: ArrayBuffer | undefined, error: Error | null }} 返回解码后的 ArrayBuffer 或错误
  */
@@ -770,15 +770,15 @@ function base64ToArrayBuffer(base64Str) {
 		// 这种变体使用 '-' 和 '_' 来代替标准 Base64 中的 '+' 和 '/'
 		// JavaScript 的 atob 函数不直接支持这种变体，所以我们需要先转换
 		base64Str = base64Str.replace(/-/g, '+').replace(/_/g, '/');
-		
+
 		// 使用 atob 函数解码 Base64 字符串
 		// atob 将 Base64 编码的 ASCII 字符串转换为原始的二进制字符串
 		const decode = atob(base64Str);
-		
+
 		// 将二进制字符串转换为 Uint8Array
 		// 这是通过遍历字符串中的每个字符并获取其 Unicode 编码值（0-255）来完成的
 		const arryBuffer = Uint8Array.from(decode, (c) => c.charCodeAt(0));
-		
+
 		// 返回 Uint8Array 的底层 ArrayBuffer
 		// 这是实际的二进制数据，可以用于网络传输或其他二进制操作
 		return { earlyData: arryBuffer.buffer, error: null };
@@ -796,7 +796,7 @@ function base64ToArrayBuffer(base64Str) {
 function isValidUUID(uuid) {
 	// 定义一个正则表达式来匹配 UUID 格式
 	const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-	
+
 	// 使用正则表达式测试 UUID 字符串
 	return uuidRegex.test(uuid);
 }
@@ -864,7 +864,7 @@ function stringify(arr, offset = 0) {
 	// 验证生成的 UUID 是否有效
 	if (!isValidUUID(uuid)) {
 		// 原：throw TypeError("Stringified UUID is invalid");
-		throw TypeError(`生成的 UUID 不符合规范 ${uuid}`); 
+		throw TypeError(`生成的 UUID 不符合规范 ${uuid}`);
 		//uuid = userID;
 	}
 	return uuid;
@@ -1076,7 +1076,7 @@ async function socks5Connect(addressType, addressRemote, portRemote, log) {
 /**
  * SOCKS5 代理地址解析器
  * 此函数用于解析 SOCKS5 代理地址字符串，提取出用户名、密码、主机名和端口号
- * 
+ *
  * @param {string} address SOCKS5 代理地址，格式可以是：
  *   - "username:password@hostname:port" （带认证）
  *   - "hostname:port" （不需认证）
@@ -1128,7 +1128,7 @@ function socks5AddressParser(address) {
 /**
  * 恢复被伪装的信息
  * 这个函数用于将内容中的假用户ID和假主机名替换回真实的值
- * 
+ *
  * @param {string} content 需要处理的内容
  * @param {string} userID 真实的用户ID
  * @param {string} hostName 真实的主机名
@@ -1137,14 +1137,14 @@ function socks5AddressParser(address) {
  */
 function revertFakeInfo(content, userID, hostName, isBase64) {
 	if (isBase64) content = atob(content);  // 如果内容是Base64编码的，先解码
-	
+
 	// 使用正则表达式全局替换（'g'标志）
 	// 将所有出现的假用户ID和假主机名替换为真实的值
 	content = content.replace(new RegExp(fakeUserID, 'g'), userID)
 	               .replace(new RegExp(fakeHostName, 'g'), hostName);
-	
+
 	if (isBase64) content = btoa(content);  // 如果原内容是Base64编码的，处理完后再次编码
-	
+
 	return content;
 }
 
@@ -1152,13 +1152,13 @@ function revertFakeInfo(content, userID, hostName, isBase64) {
  * 双重MD5哈希函数
  * 这个函数对输入文本进行两次MD5哈希，增强安全性
  * 第二次哈希使用第一次哈希结果的一部分作为输入
- * 
+ *
  * @param {string} text 要哈希的文本
  * @returns {Promise<string>} 双重哈希后的小写十六进制字符串
  */
 async function MD5MD5(text) {
 	const encoder = new TextEncoder();
-  
+
 	// 第一次MD5哈希
 	const firstPass = await crypto.subtle.digest('MD5', encoder.encode(text));
 	const firstPassArray = Array.from(new Uint8Array(firstPass));
@@ -1168,7 +1168,7 @@ async function MD5MD5(text) {
 	const secondPass = await crypto.subtle.digest('MD5', encoder.encode(firstHex.slice(7, 27)));
 	const secondPassArray = Array.from(new Uint8Array(secondPass));
 	const secondHex = secondPassArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  
+
 	return secondHex.toLowerCase();  // 返回小写的十六进制字符串
 }
 
@@ -1176,7 +1176,7 @@ async function MD5MD5(text) {
  * 解析并清理环境变量中的地址列表
  * 这个函数用于处理包含多个地址的环境变量
  * 它会移除所有的空白字符、引号等，并将地址列表转换为数组
- * 
+ *
  * @param {string} envadd 包含地址列表的环境变量值
  * @returns {Promise<string[]>} 清理和分割后的地址数组
  */
@@ -1184,14 +1184,14 @@ async function ADD(envadd) {
 	// 将制表符、双引号、单引号和换行符都替换为逗号
 	// 然后将连续的多个逗号替换为单个逗号
 	var addtext = envadd.replace(/[	|"'\r\n]+/g, ',').replace(/,+/g, ',');
-	
+
 	// 删除开头和结尾的逗号（如果有的话）
 	if (addtext.charAt(0) == ',') addtext = addtext.slice(1);
 	if (addtext.charAt(addtext.length - 1) == ',') addtext = addtext.slice(0, addtext.length - 1);
-	
+
 	// 使用逗号分割字符串，得到地址数组
 	const add = addtext.split(',');
-	
+
 	return add;
 }
 
@@ -1228,18 +1228,18 @@ function checkSUB(host) {
 const 啥啥啥_写的这是啥啊 = 'dmxlc3M=';
 function 配置信息(UUID, 域名地址) {
 	const 协议类型 = atob(啥啥啥_写的这是啥啊);
-	
+
 	const 别名 = FileName;
 	let 地址 = 域名地址;
 	let 端口 = 443;
 
 	const 用户ID = UUID;
 	const 加密方式 = 'none';
-	
+
 	const 传输层协议 = 'ws';
 	const 伪装域名 = 域名地址;
 	const 路径 = '/?ed=2560';
-	
+
 	let 传输层安全 = ['tls',true];
 	const SNI = 域名地址;
 	const 指纹 = 'randomized';
@@ -1287,23 +1287,23 @@ async function getVLESSConfig(userID, hostName, sub, UA, RproxyIP, _url) {
 	if(hostName.includes(".workers.dev") || hostName.includes(".pages.dev")){
 		if ( proxyhostsURL && (!proxyhosts || proxyhosts.length == 0)) {
 			try {
-				const response = await fetch(proxyhostsURL); 
-			
+				const response = await fetch(proxyhostsURL);
+
 				if (!response.ok) {
 					console.error('获取地址时出错:', response.status, response.statusText);
 					return; // 如果有错误，直接返回
 				}
-			
+
 				const text = await response.text();
 				const lines = text.split('\n');
 				// 过滤掉空行或只包含空白字符的行
 				const nonEmptyLines = lines.filter(line => line.trim() !== '');
-			
+
 				proxyhosts = proxyhosts.concat(nonEmptyLines);
 			} catch (error) {
 				//console.error('获取地址时出错:', error);
 			}
-		} 
+		}
 		if (proxyhosts.length != 0) proxyhost = proxyhosts[Math.floor(Math.random() * proxyhosts.length)] + "/";
 	}
 
@@ -1424,18 +1424,18 @@ https://github.com/cmliu/edgetunnel
 			if(hostName.includes('workers.dev') || hostName.includes('pages.dev')) {
 				if (proxyhostsURL && (!proxyhosts || proxyhosts.length == 0)) {
 					try {
-						const response = await fetch(proxyhostsURL); 
-					
+						const response = await fetch(proxyhostsURL);
+
 						if (!response.ok) {
 							console.error('获取地址时出错:', response.status, response.statusText);
 							return; // 如果有错误，直接返回
 						}
-					
+
 						const text = await response.text();
 						const lines = text.split('\n');
 						// 过滤掉空行或只包含空白字符的行
 						const nonEmptyLines = lines.filter(line => line.trim() !== '');
-					
+
 						proxyhosts = proxyhosts.concat(nonEmptyLines);
 					} catch (error) {
 						console.error('获取地址时出错:', error);
@@ -1444,13 +1444,13 @@ https://github.com/cmliu/edgetunnel
 				// 使用Set对象去重
 				proxyhosts = [...new Set(proxyhosts)];
 			}
-	
+
 			newAddressesapi = await getAddressesapi(addressesapi);
 			newAddressescsv = await getAddressescsv('TRUE');
 			url = `https://${hostName}/${fakeUserID}`;
 			if (hostName.includes("worker") || hostName.includes("notls") || noTLS == 'true') url += '?notls';
 			console.log(`虚假订阅: ${url}`);
-		} 
+		}
 
 		if (!userAgent.includes(('CF-Workers-SUB').toLowerCase())){
 			if ((userAgent.includes('clash') && !userAgent.includes('nekobox')) || ( _url.searchParams.has('clash') && !userAgent.includes('subconverter'))) {
@@ -1461,7 +1461,7 @@ https://github.com/cmliu/edgetunnel
 				isBase64 = false;
 			}
 		}
-		
+
 		try {
 			let content;
 			if ((!sub || sub == "") && isBase64 == true) {
@@ -1505,7 +1505,7 @@ async function getSum(accountId, accountIndex, email, key, startDate, endDate) {
 	try {
 		const startDateISO = new Date(startDate).toISOString();
 		const endDateISO = new Date(endDate).toISOString();
-	
+
 		const query = JSON.stringify({
 			query: `query getBillingMetrics($accountId: String!, $filter: AccountWorkersInvocationsAdaptiveFilter_InputObject) {
 				viewer {
@@ -1528,37 +1528,37 @@ async function getSum(accountId, accountIndex, email, key, startDate, endDate) {
 				filter: { datetime_geq: startDateISO, datetime_leq: endDateISO }
 			},
 		});
-	
+
 		const headers = new Headers({
 			'Content-Type': 'application/json',
 			'X-AUTH-EMAIL': email,
 			'X-AUTH-KEY': key,
 		});
-	
+
 		const response = await fetch(`https://api.cloudflare.com/client/v4/graphql`, {
 			method: 'POST',
 			headers: headers,
 			body: query
 		});
-	
+
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
-	
+
 		const res = await response.json();
-	
+
 		const pagesFunctionsInvocationsAdaptiveGroups = res?.data?.viewer?.accounts?.[accountIndex]?.pagesFunctionsInvocationsAdaptiveGroups;
 		const workersInvocationsAdaptive = res?.data?.viewer?.accounts?.[accountIndex]?.workersInvocationsAdaptive;
-	
+
 		if (!pagesFunctionsInvocationsAdaptiveGroups && !workersInvocationsAdaptive) {
 			throw new Error('找不到数据');
 		}
-	
+
 		const pagesSum = pagesFunctionsInvocationsAdaptiveGroups.reduce((a, b) => a + b?.sum.requests, 0);
 		const workersSum = workersInvocationsAdaptive.reduce((a, b) => a + b?.sum.requests, 0);
-	
+
 		//console.log(`范围: ${startDateISO} ~ ${endDateISO}\n默认取第 ${accountIndex} 项`);
-	
+
 		return [pagesSum, workersSum ];
 	} catch (error) {
 		return [ 0,0 ];
@@ -1583,7 +1583,7 @@ async function getAddressesapi(api) {
 		// 使用Promise.allSettled等待所有API请求完成，无论成功或失败
 		// 对api数组进行遍历，对每个API地址发起fetch请求
 		const responses = await Promise.allSettled(api.map(apiUrl => fetch(apiUrl, {
-			method: 'get', 
+			method: 'get',
 			headers: {
 				'Accept': 'text/html,application/xhtml+xml,application/xml;',
 				'User-Agent': 'CF-Workers-edgetunnel/cmliu'
@@ -1617,18 +1617,18 @@ async function getAddressescsv(tls) {
 	if (!addressescsv || addressescsv.length === 0) {
 		return [];
 	}
-	
+
 	let newAddressescsv = [];
-	
+
 	for (const csvUrl of addressescsv) {
 		try {
 			const response = await fetch(csvUrl);
-		
+
 			if (!response.ok) {
 				console.error('获取CSV地址时出错:', response.status, response.statusText);
 				continue;
 			}
-		
+
 			const text = await response.text();// 使用正确的字符编码解析文本内容
 			let lines;
 			if (text.includes('\r\n')){
@@ -1636,20 +1636,20 @@ async function getAddressescsv(tls) {
 			} else {
 				lines = text.split('\n');
 			}
-		
+
 			// 检查CSV头部是否包含必需字段
 			const header = lines[0].split(',');
 			const tlsIndex = header.indexOf('TLS');
-			
+
 			const ipAddressIndex = 0;// IP地址在 CSV 头部的位置
 			const portIndex = 1;// 端口在 CSV 头部的位置
 			const dataCenterIndex = tlsIndex + 1; // 数据中心是 TLS 的后一个字段
-		
+
 			if (tlsIndex === -1) {
 				console.error('CSV文件缺少必需的字段');
 				continue;
 			}
-		
+
 			// 从第二行开始遍历CSV行
 			for (let i = 1; i < lines.length; i++) {
 				const columns = lines[i].split(',');
@@ -1659,7 +1659,7 @@ async function getAddressescsv(tls) {
 					const ipAddress = columns[ipAddressIndex];
 					const port = columns[portIndex];
 					const dataCenter = columns[dataCenterIndex];
-			
+
 					const formattedAddress = `${ipAddress}:${port}#${dataCenter}`;
 					newAddressescsv.push(formattedAddress);
 				}
@@ -1669,7 +1669,7 @@ async function getAddressescsv(tls) {
 			continue;
 		}
 	}
-	
+
 	return newAddressescsv;
 }
 
@@ -1686,7 +1686,7 @@ function subAddresses(host,UUID,noTLS,newAddressesapi,newAddressescsv,newAddress
 		notlsresponseBody = uniqueAddressesnotls.map(address => {
 			let port = "-1";
 			let addressid = address;
-		
+
 			const match = addressid.match(regex);
 			if (!match) {
 				if (address.includes(':') && address.includes('#')) {
@@ -1704,7 +1704,7 @@ function subAddresses(host,UUID,noTLS,newAddressesapi,newAddressescsv,newAddress
 					address = parts[0];
 					addressid = parts[1];
 				}
-			
+
 				if (addressid.includes(':')) {
 					addressid = addressid.split(':')[0];
 				}
@@ -1724,14 +1724,14 @@ function subAddresses(host,UUID,noTLS,newAddressesapi,newAddressescsv,newAddress
 				}
 			}
 			if (port == "-1") port = "80";
-			
+
 			let 伪装域名 = host ;
 			let 最终路径 = '/?ed=2560' ;
 			let 节点备注 = '';
 			const 协议类型 = atob(啥啥啥_写的这是啥啊);
-			
+
 			const vlessLink = `${协议类型}://${UUID}@${address}:${port}?encryption=none&security=&type=ws&host=${伪装域名}&path=${encodeURIComponent(最终路径)}#${encodeURIComponent(addressid + 节点备注)}`;
-	
+
 			return vlessLink;
 
 		}).join('\n');
@@ -1762,7 +1762,7 @@ function subAddresses(host,UUID,noTLS,newAddressesapi,newAddressescsv,newAddress
 				address = parts[0];
 				addressid = parts[1];
 			}
-		
+
 			if (addressid.includes(':')) {
 				addressid = addressid.split(':')[0];
 			}
@@ -1782,20 +1782,20 @@ function subAddresses(host,UUID,noTLS,newAddressesapi,newAddressescsv,newAddress
 			}
 		}
 		if (port == "-1") port = "443";
-		
+
 		let 伪装域名 = host ;
 		let 最终路径 = '/?ed=2560' ;
 		let 节点备注 = '';
-		
+
 		if(proxyhosts.length > 0 && (伪装域名.includes('.workers.dev') || 伪装域名.includes('pages.dev'))) {
 			最终路径 = `/${伪装域名}${最终路径}`;
 			伪装域名 = proxyhosts[Math.floor(Math.random() * proxyhosts.length)];
 			节点备注 = ` 已启用临时域名中转服务，请尽快绑定自定义域！`;
 		}
-		
+
 		const 协议类型 = atob(啥啥啥_写的这是啥啊);
 		const vlessLink = `${协议类型}://${UUID}@${address}:${port}?encryption=none&security=tls&sni=${伪装域名}&fp=random&type=ws&host=${伪装域名}&path=${encodeURIComponent(最终路径)}#${encodeURIComponent(addressid + 节点备注)}`;
-			
+
 		return vlessLink;
 	}).join('\n');
 
@@ -1814,7 +1814,7 @@ async function sendMessage(type, ip, add_data = "") {
 		} else {
 			msg = `${type}\nIP: ${ip}\n<tg-spoiler>${add_data}`;
 		}
-	
+
 		let url = "https://api.telegram.org/bot"+ BotToken +"/sendMessage?chat_id=" + ChatID + "&parse_mode=HTML&text=" + encodeURIComponent(msg);
 		return fetch(url, {
 			method: 'get',
