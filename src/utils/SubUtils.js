@@ -231,10 +231,10 @@ https://github.com/cmliu/edgetunnel
 				return 'Error: fetch is not available in this environment.';
 			}
 
-			let newAddressesapi : string[] = [];
-			let newAddressescsv: string[] = [];
-			let newAddressesnotlsapi: string[] = [];
-			let newAddressesnotlscsv: string[] = [];
+			let newAddressesapi  = [];
+			let newAddressescsv = [];
+			let newAddressesnotlsapi = [];
+			let newAddressesnotlscsv = [];
 
 			// 如果是使用默认域名，则改成一个workers的域名，订阅器会加上代理
 			if (hostName.includes(".workers.dev")){
@@ -394,8 +394,8 @@ https://github.com/cmliu/edgetunnel
 				throw new Error('找不到数据');
 			}
 
-			const pagesSum = pagesFunctionsInvocationsAdaptiveGroups.reduce((a: any, b: { sum: { requests: any; }; }) => a + b?.sum.requests, 0);
-			const workersSum = workersInvocationsAdaptive.reduce((a: any, b: { sum: { requests: any; }; }) => a + b?.sum.requests, 0);
+			const pagesSum = pagesFunctionsInvocationsAdaptiveGroups.reduce((a, b) => a + b?.sum.requests, 0);
+			const workersSum = workersInvocationsAdaptive.reduce((a, b) => a + b?.sum.requests, 0);
 
 			//console.log(`范围: ${startDateISO} ~ ${endDateISO}\n默认取第 ${accountIndex} 项`);
 

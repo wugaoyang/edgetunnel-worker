@@ -17,7 +17,7 @@ export default {
 	 * @param {import('@cloudflare/workers-types').ExecutionContext} ctx
 	 * @returns {Promise<Response>}
 	 */
-	async fetch(request: any, env: any): Promise<Response> {
+	async fetch(request, env){
 		try {
 			const { UA, userAgent, upgradeHeader, url } = await initParam(request, env);
 			if (!upgradeHeader || upgradeHeader !== 'websocket') {
@@ -86,7 +86,7 @@ export default {
  * @param request
  * @param env
  */
-async function initParam(request: any, env: any) {
+async function initParam(request, env) {
 	const UA = request.headers.get('User-Agent') || 'null';
 	const userAgent = UA.toLowerCase();
 	AppParam.userID = (env.UUID || AppParam.userID).toLowerCase();
@@ -155,7 +155,7 @@ async function initParam(request: any, env: any) {
  * @param env
  * @param request
  */
-async function _worker(env: any, request: any) {
+async function _worker(env, request) {
 	const envKey = env.URL302 ? 'URL302' : (env.URL ? 'URL' : null);
 	if (envKey) {
 		const URLs = await CommonUtils.ADD(env[envKey]);
@@ -642,7 +642,7 @@ export function processVlessHeader(vlessBuffer, userID) {
  * @returns {Promise<void>} 异步操作的 Promise
  */
 export async function handleTCPOutBound(remoteSocket, addressType, addressRemote, portRemote, rawClientData, webSocket, vlessResponseHeader, log,) {
-	async function useSocks5Pattern(address: string) {
+	async function useSocks5Pattern(address) {
 		if ( AppParam.go2Socks5s.includes(atob('YWxsIGlu')) || AppParam.go2Socks5s.includes(atob('Kg==')) ) return true;
 		return AppParam.go2Socks5s.some(pattern => {
 			let regexPattern = pattern.replace(/\*/g, '.*');
@@ -728,7 +728,7 @@ export async function remoteSocketToWS(remoteSocket, webSocket, vlessResponseHea
 	let remoteChunkCount = 0;
 	let chunks = [];
 	/** @type {ArrayBuffer | null} */
-	let vlessHeader : any = vlessResponseHeader;
+	let vlessHeader  = vlessResponseHeader;
 	let hasIncomingData = false; // 检查远程 Socket 是否有传入数据
 
 	// 使用管道将远程 Socket 的可读流连接到一个可写流
@@ -968,7 +968,7 @@ export  async function sendMessage(type, ip, add_data = "") {
 		let msg = "";
 		const response = await fetch(`http://ip-api.com/json/${ip}?lang=zh-CN`);
 		if (response.status == 200) {
-			const ipInfo: any = await response.json();
+			const ipInfo = await response.json();
 			msg = `${type}\nIP: ${ip}\n国家: ${ipInfo.country}\n<tg-spoiler>城市: ${ipInfo.city}\n组织: ${ipInfo.org}\nASN: ${ipInfo.as}\n${add_data}`;
 		} else {
 			msg = `${type}\nIP: ${ip}\n<tg-spoiler>${add_data}`;
