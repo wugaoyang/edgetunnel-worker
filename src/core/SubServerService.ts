@@ -55,6 +55,7 @@ export async function vlessOverWSHandler(request: any) {
 			}
 			if (remoteSocketWapper.value) {
 				// 如果已有远程 Socket，直接写入数据
+				// @ts-ignore
 				const writer = remoteSocketWapper.value.writable.getWriter()
 				await writer.write(chunk);
 				writer.releaseLock();
@@ -215,7 +216,7 @@ export function makeReadableWebSocketStream(webSocketServer: WebSocket, earlyDat
  * @param {ArrayBuffer} vlessResponseHeader - VLESS 协议的响应头部数据
  * @param {(string)=> void} log - 日志记录函数
  */
-export async function handleDNSQuery(udpChunk, webSocket, vlessResponseHeader, log) {
+export async function handleDNSQuery(udpChunk: any, webSocket: WebSocket, vlessResponseHeader: Uint8Array | null, log: any) {
 	// 无论客户端发送到哪个 DNS 服务器，我们总是使用硬编码的服务器
 	// 因为有些 DNS 服务器不支持 DNS over TCP
 	try {
@@ -262,6 +263,7 @@ export async function handleDNSQuery(udpChunk, webSocket, vlessResponseHeader, l
 	} catch (error) {
 		// 捕获并记录任何可能发生的错误
 		console.error(
+			// @ts-ignore
 			`handleDNSQuery 函数发生异常，错误信息: ${error.message}`
 		);
 	}
@@ -273,7 +275,7 @@ export async function handleDNSQuery(udpChunk, webSocket, vlessResponseHeader, l
  * @param {string} userID 用于验证的用户 ID
  * @returns {Object} 解析结果，包括是否有错误、错误信息、远程地址信息等
  */
-export function processVlessHeader(vlessBuffer, userID) {
+export function processVlessHeader(vlessBuffer : any, userID: string) {
 	// 检查数据长度是否足够（至少需要 24 字节）
 	if (vlessBuffer.byteLength < 24) {
 		return {
@@ -420,8 +422,8 @@ export function processVlessHeader(vlessBuffer, userID) {
  * @param {function} log 日志记录函数
  * @returns {Promise<void>} 异步操作的 Promise
  */
-export async function handleTCPOutBound(remoteSocket, addressType, addressRemote, portRemote, rawClientData, webSocket, vlessResponseHeader, log,) {
-	async function useSocks5Pattern(address) {
+export async function handleTCPOutBound(remoteSocket: { value: any; }, addressType: number | undefined, addressRemote: string, portRemote: number, rawClientData: any, webSocket: WebSocket, vlessResponseHeader: Uint8Array, log: any,) {
+	async function useSocks5Pattern(address: string) {
 		if ( AppParam.go2Socks5s.includes(atob('YWxsIGlu')) || AppParam.go2Socks5s.includes(atob('Kg==')) ) return true;
 		return AppParam.go2Socks5s.some(pattern => {
 			let regexPattern = pattern.replace(/\*/g, '.*');
@@ -436,18 +438,20 @@ export async function handleTCPOutBound(remoteSocket, addressType, addressRemote
 	 * @param {boolean} socks 是否使用 SOCKS5 代理连接
 	 * @returns {Promise<import("@cloudflare/workers-types").Socket>} 连接后的 TCP Socket
 	 */
-	async function connectAndWrite(address, port, socks = false) {
+	async function connectAndWrite(address: string, port: number, socks = false) {
 		/** @type {import("@cloudflare/workers-types").Socket} */
 		log(`connected to ${address}:${port}`);
 		//if (/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(address)) address = `${atob('d3d3Lg==')}${address}${atob('LmlwLjA5MDIyNy54eXo=')}`;
 		// 如果指定使用 SOCKS5 代理，则通过 SOCKS5 协议连接；否则直接连接
 		const tcpSocket = socks ? await socks5Connect(addressType, address, port, log)
 			: connect({
+				// @ts-ignore
 				hostname: address,
 				port: port,
 			});
 		remoteSocket.value = tcpSocket;
 		//log(`connected to ${address}:${port}`);
+		// @ts-ignore
 		const writer = tcpSocket.writable.getWriter();
 		// 首次写入，通常是 TLS 客户端 Hello 消息
 		await writer.write(rawClientData);
@@ -469,6 +473,7 @@ export async function handleTCPOutBound(remoteSocket, addressType, addressRemote
 			tcpSocket = await connectAndWrite(AppParam.proxyIP || addressRemote, portRemote);
 		}
 		// 无论重试是否成功，都要关闭 WebSocket（可能是为了重新建立连接）
+		// @ts-ignore
 		tcpSocket.closed.catch(error => {
 			console.log('retry tcpSocket closed error', error);
 		}).finally(() => {
@@ -499,15 +504,19 @@ export async function handleTCPOutBound(remoteSocket, addressType, addressRemote
  * @param {(() => Promise<void>) | null} retry 重试函数，当没有数据时调用
  * @param {*} log 日志函数
  */
-export async function remoteSocketToWS(remoteSocket, webSocket, vlessResponseHeader, retry, log) {
+export async function remoteSocketToWS(remoteSocket: Socket | undefined, webSocket: WebSocket, vlessResponseHeader: Uint8Array, retry: {
+	(): Promise<void>;
+	(): void;
+} | null, log: { (info: string, event: string | undefined): void; (arg0: string): void; (info: string, event: string | undefined): void; (arg0: string): void; (arg0: string): void; }) {
 	// 将数据从远程服务器转发到 WebSocket
 	let remoteChunkCount = 0;
 	let chunks = [];
 	/** @type {ArrayBuffer | null} */
-	let vlessHeader = vlessResponseHeader;
+	let vlessHeader : any = vlessResponseHeader;
 	let hasIncomingData = false; // 检查远程 Socket 是否有传入数据
 
 	// 使用管道将远程 Socket 的可读流连接到一个可写流
+	// @ts-ignore
 	await remoteSocket.readable
 		.pipeTo(
 			new WritableStream({
@@ -581,7 +590,7 @@ export async function remoteSocketToWS(remoteSocket, webSocket, vlessResponseHea
  * 通常，WebSocket 在关闭时不会抛出异常，但为了以防万一，我们还是用 try-catch 包裹
  * @param {import("@cloudflare/workers-types").WebSocket} socket 要关闭的 WebSocket 对象
  */
-export function safeCloseWebSocket(socket) {
+export function safeCloseWebSocket(socket: WebSocket) {
 	try {
 		// 只有在 WebSocket 处于开放或正在关闭状态时才调用 close()
 		// 这避免了在已关闭或连接中的 WebSocket 上调用 close()
@@ -601,7 +610,7 @@ export function safeCloseWebSocket(socket) {
  * @param {number} portRemote 目标端口
  * @param {function} log 日志记录函数
  */
-export async function socks5Connect(addressType: any, addressRemote: string | undefined, portRemote: number, log: (arg0: string) => void) {
+export async function socks5Connect(addressType: any, addressRemote: string, portRemote: number, log: (arg0: string) => void) {
 	// @ts-ignore
 	const { username, password, hostname, port } = AppParam.parsedSocks5Address;
 	// 连接到 SOCKS5 代理服务器
@@ -738,12 +747,12 @@ export async function socks5Connect(addressType: any, addressRemote: string | un
 	return socket;
 }
 
-export  async function sendMessage(type, ip, add_data = "") {
+export  async function sendMessage(type: string, ip: any, add_data = "") {
 	if ( AppParam.BotToken !== '' && AppParam.ChatID !== ''){
 		let msg = "";
 		const response = await fetch(`http://ip-api.com/json/${ip}?lang=zh-CN`);
 		if (response.status == 200) {
-			const ipInfo = await response.json();
+			const ipInfo: any = await response.json();
 			msg = `${type}\nIP: ${ip}\n国家: ${ipInfo.country}\n<tg-spoiler>城市: ${ipInfo.city}\n组织: ${ipInfo.org}\nASN: ${ipInfo.as}\n${add_data}`;
 		} else {
 			msg = `${type}\nIP: ${ip}\n<tg-spoiler>${add_data}`;

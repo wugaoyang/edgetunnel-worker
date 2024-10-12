@@ -1,7 +1,7 @@
 // 预计算 0-255 每个字节的十六进制表示
 import AppParam from '../core/AppParam';
 
-const byteToHex = [];
+const byteToHex: string[] = [];
 for (let i = 0; i < 256; ++i) {
 	// (i + 256).toString(16) 确保总是得到两位数的十六进制
 	// .slice(1) 删除前导的 "1"，只保留两位十六进制数
@@ -36,7 +36,7 @@ export default class CommonUtils{
 	 * @returns {string} 有效的 UUID 字符串
 	 * @throws {TypeError} 如果生成的 UUID 字符串无效
 	 */
-	static stringify(arr, offset = 0) {
+	static stringify(arr: Uint8Array, offset = 0) {
 		// 使用不安全的函数快速生成 UUID 字符串
 		const uuid = this.unsafeStringify(arr, offset);
 		// 验证生成的 UUID 是否有效
@@ -54,11 +54,11 @@ export default class CommonUtils{
 	 * @param {number} offset 数组中 UUID 开始的位置，默认为 0
 	 * @returns {string} UUID 字符串
 	 */
-	static unsafeStringify(arr, offset = 0) {
+	static unsafeStringify(arr: Uint8Array, offset: number = 0) {
 		// 直接从查找表中获取每个字节的十六进制表示，并拼接成 UUID 格式
 		// 8-4-4-4-12 的分组是通过精心放置的连字符 "-" 实现的
 		// toLowerCase() 确保整个 UUID 是小写的
-		return (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" +
+		return (byteToHex[arr[offset - 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" +
 			byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" +
 			byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" +
 			byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" +
@@ -159,7 +159,7 @@ export default class CommonUtils{
 	 * @param {boolean} isBase64 内容是否是Base64编码的
 	 * @returns {string} 恢复真实信息后的内容
 	 */
-	static revertFakeInfo(content, userID, hostName, isBase64) {
+	static revertFakeInfo(content: string, userID: any, hostName: any, isBase64: boolean) {
 		if (isBase64) content = atob(content);  // 如果内容是Base64编码的，先解码
 
 		// 使用正则表达式全局替换（'g'标志）
@@ -179,7 +179,7 @@ export default class CommonUtils{
 	 * @param {string} envadd 包含地址列表的环境变量值
 	 * @returns {Promise<string[]>} 清理和分割后的地址数组
 	 */
-	static async ADD(envadd) {
+	static async ADD(envadd: any) {
 		// 将制表符、双引号、单引号和换行符都替换为逗号
 		// 然后将连续的多个逗号替换为单个逗号
 		var addtext = envadd.replace(/[	|"'\r\n]+/g, ',').replace(/,+/g, ',');
@@ -201,7 +201,7 @@ export default class CommonUtils{
 	 * @param {string} text 要哈希的文本
 	 * @returns {Promise<string>} 双重哈希后的小写十六进制字符串
 	 */
-	static async MD5MD5(text) {
+	static async MD5MD5(text: string | undefined) {
 		const encoder = new TextEncoder();
 
 		// 第一次MD5哈希

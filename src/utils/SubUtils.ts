@@ -32,7 +32,7 @@ export default class SubUtils{
 		return add;
 	}
 
-	static checkSUB(host : string) {
+	static checkSUB(host: string | string[]) {
 		if ((!AppParam.sub || AppParam.sub == '') && (AppParam.addresses.length + AppParam.addressesapi.length + AppParam.addressesnotls.length + AppParam.addressesnotlsapi.length + AppParam.addressescsv.length) == 0){
 			AppParam.addresses = [
 				'Join.my.Telegram.channel.CMLiussss.to.unlock.more.premium.nodes.cf.090227.xyz#加入我的频道t.me/CMLiussss解锁更多优选节点',
@@ -113,7 +113,7 @@ export default class SubUtils{
 	 * @param {string} UA
 	 * @returns {Promise<string>}
 	 */
-	static async getVLESSConfig(userID, hostName, sub, UA, RproxyIP, _url) {
+	static async getVLESSConfig(userID: string, hostName: string | string[], sub: string | null, UA: string, RproxyIP: string, _url: URL) {
 		this.checkSUB(hostName);
 		const userAgent = UA.toLowerCase();
 		const Config = this.配置信息(userID , hostName);
@@ -233,22 +233,22 @@ https://github.com/cmliu/edgetunnel
 
 			let newAddressesapi : string[] = [];
 			let newAddressescsv: string[] = [];
-			let newAddressesnotlsapi = [];
+			let newAddressesnotlsapi: string[] = [];
 			let newAddressesnotlscsv: string[] = [];
 
 			// 如果是使用默认域名，则改成一个workers的域名，订阅器会加上代理
 			if (hostName.includes(".workers.dev")){
 				AppParam.noTLS = 'true';
 				AppParam.fakeHostName = `${AppParam.fakeHostName}.workers.dev`;
-				newAddressesnotlsapi = await getAddressesapi(AppParam.addressesnotlsapi);
-				newAddressesnotlscsv = await getAddressescsv('FALSE');
+				newAddressesnotlsapi = await this.getAddressesapi(AppParam.addressesnotlsapi);
+				newAddressesnotlscsv = await this.getAddressescsv('FALSE');
 			} else if (hostName.includes(".pages.dev")){
 				AppParam.fakeHostName = `${AppParam.fakeHostName}.pages.dev`;
 			} else if (hostName.includes("worker") || hostName.includes("notls") || AppParam.noTLS == 'true'){
 				AppParam.noTLS = 'true';
 				AppParam.fakeHostName = `notls${AppParam.fakeHostName}.net`;
-				newAddressesnotlsapi = await getAddressesapi(AppParam.addressesnotlsapi);
-				newAddressesnotlscsv = await getAddressescsv('FALSE');
+				newAddressesnotlsapi = await this.getAddressesapi(AppParam.addressesnotlsapi);
+				newAddressesnotlscsv = await this.getAddressescsv('FALSE');
 			} else {
 				AppParam.fakeHostName = `${AppParam.fakeHostName}.xyz`
 			}
@@ -316,13 +316,14 @@ https://github.com/cmliu/edgetunnel
 
 			} catch (error) {
 				console.error('Error fetching content:', error);
+				// @ts-ignore
 				return `Error fetching content: ${error.message}`;
 			}
 
 		}
 	}
 
-  static 	async getAccountId(email, key) {
+  static 	async getAccountId(email: any, key: any) {
 		try {
 			const url = 'https://api.cloudflare.com/client/v4/accounts';
 			const headers = new Headers({
@@ -331,6 +332,7 @@ https://github.com/cmliu/edgetunnel
 			});
 			const response = await fetch(url, { headers });
 			const data = await response.json();
+			// @ts-ignore
 			return data.result[0].id; // 假设我们需要第一个账号ID
 		} catch (error) {
 			return false ;
@@ -383,15 +385,17 @@ https://github.com/cmliu/edgetunnel
 
 			const res = await response.json();
 
+			// @ts-ignore
 			const pagesFunctionsInvocationsAdaptiveGroups = res?.data?.viewer?.accounts?.[accountIndex]?.pagesFunctionsInvocationsAdaptiveGroups;
+			// @ts-ignore
 			const workersInvocationsAdaptive = res?.data?.viewer?.accounts?.[accountIndex]?.workersInvocationsAdaptive;
 
 			if (!pagesFunctionsInvocationsAdaptiveGroups && !workersInvocationsAdaptive) {
 				throw new Error('找不到数据');
 			}
 
-			const pagesSum = pagesFunctionsInvocationsAdaptiveGroups.reduce((a, b) => a + b?.sum.requests, 0);
-			const workersSum = workersInvocationsAdaptive.reduce((a, b) => a + b?.sum.requests, 0);
+			const pagesSum = pagesFunctionsInvocationsAdaptiveGroups.reduce((a: any, b: { sum: { requests: any; }; }) => a + b?.sum.requests, 0);
+			const workersSum = workersInvocationsAdaptive.reduce((a: any, b: { sum: { requests: any; }; }) => a + b?.sum.requests, 0);
 
 			//console.log(`范围: ${startDateISO} ~ ${endDateISO}\n默认取第 ${accountIndex} 项`);
 
@@ -401,7 +405,7 @@ https://github.com/cmliu/edgetunnel
 		}
 	}
 
-	static async getAddressesapi(api) {
+	static async getAddressesapi(api: string[]) {
 		if (!api || api.length === 0) {
 			return [];
 		}
@@ -443,13 +447,13 @@ https://github.com/cmliu/edgetunnel
 			clearTimeout(timeout);
 		}
 
-		const newAddressesapi = await ADD(newapi);
+		const newAddressesapi = await this.ADD(newapi);
 
 		// 返回处理后的结果
 		return newAddressesapi;
 	}
 
-	static async getAddressescsv(tls) {
+	static async getAddressescsv(tls: string) {
 		if (!AppParam.addressescsv || AppParam.addressescsv.length === 0) {
 			return [];
 		}
@@ -491,7 +495,7 @@ https://github.com/cmliu/edgetunnel
 					const columns = lines[i].split(',');
 					const speedIndex = columns.length - 1; // 最后一个字段
 					// 检查TLS是否为"TRUE"且速度大于DLS
-					if (columns[tlsIndex].toUpperCase() === tls && parseFloat(columns[speedIndex]) > DLS) {
+					if (columns[tlsIndex].toUpperCase() === tls && parseFloat(columns[speedIndex]) > AppParam.DLS) {
 						const ipAddress = columns[ipAddressIndex];
 						const port = columns[portIndex];
 						const dataCenter = columns[dataCenterIndex];
@@ -509,7 +513,7 @@ https://github.com/cmliu/edgetunnel
 		return newAddressescsv;
 	}
 
-	static subAddresses(host,UUID,noTLS,newAddressesapi,newAddressescsv,newAddressesnotlsapi,newAddressesnotlscsv) {
+	static subAddresses(host: string, UUID: string, noTLS: string, newAddressesapi: string[], newAddressescsv: string[], newAddressesnotlsapi: string[] , newAddressesnotlscsv: string[]) {
 		const regex = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|\[.*\]):?(\d+)?#?(.*)?$/;
 		AppParam.addresses = AppParam.addresses.concat(newAddressesapi);
 		AppParam.addresses = AppParam.addresses.concat(newAddressescsv);

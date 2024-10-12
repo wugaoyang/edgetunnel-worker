@@ -6,14 +6,21 @@
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
+    "build": "webpack",
     "test": "vitest",
     "cf-typegen": "wrangler types"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.8",
+    "@babel/preset-env": "^7.25.8",
     "@cloudflare/vitest-pool-workers": "^0.5.2",
     "@cloudflare/workers-types": "^4.20241011.0",
-    "typescript": "^5.5.2",
+    "babel-loader": "^9.2.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.6.3",
     "vitest": "2.0.5",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4",
     "wrangler": "^3.60.3"
   }
 }

@@ -1,7 +1,7 @@
 import CommonUtils from './utils/CommonUtils';
 
 import AppParam from './core/AppParam';
-import { sendMessage, vlessOverWSHandler } from './core/subServerService';
+import { sendMessage, vlessOverWSHandler } from './core/SubServerService';
 import SubUtils from './utils/SubUtils';
 
 if (!CommonUtils.isValidUUID(AppParam.userID)) {
@@ -15,7 +15,7 @@ export default {
 	 * @param {import('@cloudflare/workers-types').ExecutionContext} ctx
 	 * @returns {Promise<Response>}
 	 */
-	async fetch(request, env): Promise<Response> {
+	async fetch(request: any, env: any): Promise<Response> {
 		try {
 			const { UA, userAgent, upgradeHeader, url } = await initParam(request, env);
 			if (!upgradeHeader || upgradeHeader !== 'websocket') {
@@ -84,7 +84,7 @@ export default {
  * @param request
  * @param env
  */
-async function initParam(request, env) {
+async function initParam(request: any, env: any) {
 	const UA = request.headers.get('User-Agent') || 'null';
 	const userAgent = UA.toLowerCase();
 	AppParam.userID = (env.UUID || AppParam.userID).toLowerCase();
@@ -153,7 +153,7 @@ async function initParam(request, env) {
  * @param env
  * @param request
  */
-async function _worker(env, request) {
+async function _worker(env: any, request: any) {
 	const envKey = env.URL302 ? 'URL302' : (env.URL ? 'URL' : null);
 	if (envKey) {
 		const URLs = await CommonUtils.ADD(env[envKey]);
@@ -172,7 +172,7 @@ async function _worker(env, request) {
  * @param env
  * @param userAgent
  */
-async function getSubInfo(request, UA, url: URL, env, userAgent: string) {
+async function getSubInfo(request: any, UA: any, url: URL, env: any, userAgent: string) {
 	await sendMessage(`#获取订阅 ${AppParam.FileName}`, request.headers.get('CF-Connecting-IP'), `UA: ${UA}</tg-spoiler>\n域名: ${url.hostname}\n<tg-spoiler>入口: ${url.pathname + url.search}</tg-spoiler>`);
 	const vlessConfig = await SubUtils.getVLESSConfig(AppParam.userID, request.headers.get('Host'), AppParam.sub, UA, AppParam.RproxyIP, url);
 	const now = Date.now();
