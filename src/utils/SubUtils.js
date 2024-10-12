@@ -17,7 +17,7 @@ export default class SubUtils{
 	 * @param {string} envadd 包含地址列表的环境变量值
 	 * @returns {Promise<string[]>} 清理和分割后的地址数组
 	 */
-	static async ADD(envadd: string) {
+	static async ADD(envadd) {
 		// 将制表符、双引号、单引号和换行符都替换为逗号
 		// 然后将连续的多个逗号替换为单个逗号
 		var addtext = envadd.replace(/[	|"'\r\n]+/g, ',').replace(/,+/g, ',');
@@ -32,7 +32,7 @@ export default class SubUtils{
 		return add;
 	}
 
-	static checkSUB(host: string | string[]) {
+	static checkSUB(host) {
 		if ((!AppParam.sub || AppParam.sub == '') && (AppParam.addresses.length + AppParam.addressesapi.length + AppParam.addressesnotls.length + AppParam.addressesnotlsapi.length + AppParam.addressescsv.length) == 0){
 			AppParam.addresses = [
 				'Join.my.Telegram.channel.CMLiussss.to.unlock.more.premium.nodes.cf.090227.xyz#加入我的频道t.me/CMLiussss解锁更多优选节点',
@@ -64,7 +64,7 @@ export default class SubUtils{
 		}
 	}
 
-	static 配置信息(UUID: any, 域名地址: string | string[]) {
+	static 配置信息(UUID, 域名地址) {
 		const 协议类型 = atob(啥啥啥_写的这是啥啊);
 
 		const 别名 = AppParam.FileName;
@@ -113,7 +113,7 @@ export default class SubUtils{
 	 * @param {string} UA
 	 * @returns {Promise<string>}
 	 */
-	static async getVLESSConfig(userID: string, hostName: string | string[], sub: string | null, UA: string, RproxyIP: string, _url: URL) {
+	static async getVLESSConfig(userID, hostName, sub, UA, RproxyIP, _url) {
 		this.checkSUB(hostName);
 		const userAgent = UA.toLowerCase();
 		const Config = this.配置信息(userID , hostName);
@@ -323,7 +323,7 @@ https://github.com/cmliu/edgetunnel
 		}
 	}
 
-  static 	async getAccountId(email: any, key: any) {
+  static 	async getAccountId(email, key) {
 		try {
 			const url = 'https://api.cloudflare.com/client/v4/accounts';
 			const headers = new Headers({
@@ -339,7 +339,7 @@ https://github.com/cmliu/edgetunnel
 		}
 	}
 
-	static async getSum(accountId: any, accountIndex: string | number, email: any, key: any, startDate: string | number | Date, endDate: string | number | Date) {
+	static async getSum(accountId, accountIndex, email, key, startDate, endDate) {
 		try {
 			const startDateISO = new Date(startDate).toISOString();
 			const endDateISO = new Date(endDate).toISOString();
@@ -405,7 +405,7 @@ https://github.com/cmliu/edgetunnel
 		}
 	}
 
-	static async getAddressesapi(api: string[]) {
+	static async getAddressesapi(api) {
 		if (!api || api.length === 0) {
 			return [];
 		}
@@ -453,7 +453,7 @@ https://github.com/cmliu/edgetunnel
 		return newAddressesapi;
 	}
 
-	static async getAddressescsv(tls: string) {
+	static async getAddressescsv(tls) {
 		if (!AppParam.addressescsv || AppParam.addressescsv.length === 0) {
 			return [];
 		}
@@ -513,7 +513,7 @@ https://github.com/cmliu/edgetunnel
 		return newAddressescsv;
 	}
 
-	static subAddresses(host: string, UUID: string, noTLS: string, newAddressesapi: string[], newAddressescsv: string[], newAddressesnotlsapi: string[] , newAddressesnotlscsv: string[]) {
+	static subAddresses(host, UUID, noTLS, newAddressesapi, newAddressescsv, newAddressesnotlsapi , newAddressesnotlscsv) {
 		const regex = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|\[.*\]):?(\d+)?#?(.*)?$/;
 		AppParam.addresses = AppParam.addresses.concat(newAddressesapi);
 		AppParam.addresses = AppParam.addresses.concat(newAddressescsv);

@@ -10,7 +10,7 @@ static userID = '80cd4a77-141a-43c9-991b-08263cfe9c10';
 // 5.161.191.23
 static proxyIP = '142.171.140.152';
 
-static sub: string | null = '';// 避免项目被滥用，现已取消内置订阅器
+static sub = '';// 避免项目被滥用，现已取消内置订阅器
 static subconverter = 'SUBAPI.fxxk.dedyn.io';// clash订阅转换后端，目前使用CM的订阅转换功能。自带虚假uuid和host订阅。
 static subconfig = "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Mini_MultiMode.ini"; //订阅配置文件
 static subProtocol = 'https';
@@ -23,16 +23,16 @@ static parsedSocks5Address = {};
 static enableSocks = false;
 
 // 虚假uuid和hostname，用于发送给配置生成服务
-static fakeUserID: string ;
-static fakeHostName: string ;
+static fakeUserID ;
+static fakeHostName ;
 static noTLS = 'false';
 static expire = 4102329600;//2099-12-31
-static proxyIPs: any[];
-static socks5s: any[];
+static proxyIPs;
+static socks5s;
 static go2Socks5s = [
 	'*ttvnw.net',
 ];
-static addresses : string[] = [
+static addresses = [
 	//当sub为空时启用本地优选域名/优选IP，若不带端口号 TLS默认端口为443，#号后为备注别名
 	/*
 	'Join.my.Telegram.channel.CMLiussss.to.unlock.more.premium.nodes.cf.090227.xyz#加入我的频道t.me/CMLiussss解锁更多优选节点',
@@ -52,8 +52,8 @@ static addresses : string[] = [
 	'[2606:4700::]#IPv6'
 	*/
 ];
-static addressesapi: string[] = [];
-static addressesnotls: string[] = [
+static addressesapi = [];
+static addressesnotls = [
 	//当sub为空且域名带有"worker"字样时启用本地优选域名/优选IP，若不带端口号 noTLS默认端口为80，#号后为备注别名
 	/*
 	'usa.visa.com',
@@ -65,13 +65,13 @@ static addressesnotls: string[] = [
 	'[2606:4700::1]:2095#IPv6'
 	*/
 ];
-static addressesnotlsapi: string[] = [];
-static addressescsv: string[] = [];
+static addressesnotlsapi = [];
+static addressescsv = [];
 static DLS = 8;
 static FileName = 'edgetunnel';
 static BotToken ='';
 static ChatID ='';
-static proxyhosts: string[] = [];//本地代理域名池
+static proxyhosts = [];//本地代理域名池
 static proxyhostsURL = 'https://raw.githubusercontent.com/cmliu/CFcdnVmess2sub/main/proxyhosts';//在线代理域名池URL
 static RproxyIP = 'false';
 }
