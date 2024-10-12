@@ -1,3 +1,4 @@
+// 确保引入 webpack
 const path = require('path');
 
 module.exports = {
@@ -21,8 +22,11 @@ module.exports = {
 			},
 		],
 	},
-	devtool: 'source-map', // 生成 source map
-	externals: {
-		'cloudflare:sockets': 'commonjs cloudflare:sockets',  // 告诉 Webpack 忽略这个模块
-	},
+	// plugins: [
+	// 	// 处理 cloudflare:sockets 的插件
+	// 	new webpack.ProvidePlugin({
+	// 		// 在这里添加需要提供的模块
+	// 		'cloudflare': 'cloudflare:sockets',
+	// 	}),
+	// ],
 };

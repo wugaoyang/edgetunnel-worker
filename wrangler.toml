@@ -4,7 +4,7 @@ main = "src/_worker.ts"
 compatibility_date = "2023-05-18"
 compatibility_flags = ["nodejs_compat"]
 # 构建配置
-build = {command = "npm run build",  cwd = ".",upload = {format = "service-worker", dir = "./dist" }}
+#build = {command = "npm run build",  cwd = ".",upload = {format = "service-worker", dir = "./dist" }}
 # Workers Logs
 # Docs: https://developers.cloudflare.com/workers/observability/logs/workers-logs/
 # Configuration: https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs
