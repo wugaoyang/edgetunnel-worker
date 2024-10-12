@@ -21,7 +21,7 @@ export default {
 			if (!upgradeHeader || upgradeHeader !== 'websocket') {
 				switch (url.pathname.toLowerCase()) {
 					case '/':
-						return await index(env, request);
+						return await _worker(env, request);
 
 					case `/${AppParam.fakeUserID}`:
 						const fakeConfig = await SubUtils.getVLESSConfig(AppParam.userID, request.headers.get('Host'), AppParam.sub, 'CF-Workers-SUB', AppParam.RproxyIP, url);
@@ -153,7 +153,7 @@ async function initParam(request, env) {
  * @param env
  * @param request
  */
-async function index(env, request) {
+async function _worker(env, request) {
 	const envKey = env.URL302 ? 'URL302' : (env.URL ? 'URL' : null);
 	if (envKey) {
 		const URLs = await CommonUtils.ADD(env[envKey]);

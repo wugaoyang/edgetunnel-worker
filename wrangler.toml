@@ -1,6 +1,6 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "edgetunnel-worker"
-main = "src/index.ts"
+main = "src/_worker.ts"
 compatibility_date = "2023-05-18"
 compatibility_flags = ["nodejs_compat"]
 
@@ -107,8 +107,8 @@ enabled = true
 # binding = "MY_SERVICE"
 # service = "my-service"
 
-# Bind a Vectorize index. Use to store and query vector embeddings for semantic search, classification and other vector search use-cases.
+# Bind a Vectorize _worker. Use to store and query vector embeddings for semantic search, classification and other vector search use-cases.
 # Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#vectorize-indexes
 # [[vectorize]]
 # binding = "MY_INDEX"
-# index_name = "my-index"
+# index_name = "my-_worker"
